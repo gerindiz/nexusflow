@@ -28,32 +28,24 @@ NexusFlow resuelve un problema real: los equipos pierden horas configurando auto
 
 ## Arquitectura
 
-┌─────────────────────────────────────────────────────┐
-│                    Cliente                           │
-│         Next.js 15 App Router + React 19             │
-│              Zustand · TanStack Query                │
-└─────────────────┬───────────────────────────────────┘
-│ HTTPS / WebSocket
-┌─────────────────▼───────────────────────────────────┐
-│                  Plataforma Core                     │
-│  Supabase          Event Bus        AI Agents        │
-│  PostgreSQL +    workflow.triggered  Langchain.js    │
-│  RLS + Auth    · step.completed   · GPT-4o           │
-│  Realtime      · agent.responded  · RAG + pgvector   │
-│  Edge Functions· error.occurred   · Tool calling     │
-└─────────────────┬───────────────────────────────────┘
-│ webhooks / API calls
-┌─────────────────▼───────────────────────────────────┐
-│              Integraciones Externas                  │
-│     Make · Slack · Stripe · OpenAI · Email           │
-└─────────────────────────────────────────────────────┘
+NexusFlow sigue una arquitectura **event-driven** de tres capas:
+
+**Capa Cliente**
+Next.js 15 App Router · React 19 Server Components · Zustand · TanStack Query
+
+**Capa Plataforma (Core)**
+Supabase (PostgreSQL + RLS + Realtime) · Edge Functions · Event Bus · Agentes IA (Langchain.js + GPT-4o) · RAG con pgvector
+
+**Capa Integraciones**
+Make · Slack · Stripe · OpenAI · Email · Webhooks externos
+
 **Patrones aplicados:**
-- Event-Driven Architecture — desacople total entre ejecución y UI
-- BFF (Backend for Frontend) — Next.js API Routes como capa intermedia
-- Row Level Security — seguridad multitenant a nivel de base de datos
-- RAG Pipeline — agentes con contexto del usuario via pgvector
-- Webhook Adapter Pattern — integraciones bidireccionales con validación HMAC
-- Observer Pattern — Supabase Realtime para actualizaciones en vivo
+- **Event-Driven Architecture** — desacople total entre ejecución y UI
+- **BFF (Backend for Frontend)** — Next.js API Routes como capa intermedia
+- **Row Level Security** — seguridad multitenant a nivel de base de datos
+- **RAG Pipeline** — agentes con contexto del usuario via pgvector
+- **Webhook Adapter Pattern** — integraciones bidireccionales con validación HMAC
+- **Observer Pattern** — Supabase Realtime para actualizaciones en vivo
 
 ---
 
