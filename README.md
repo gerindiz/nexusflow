@@ -34,7 +34,7 @@ NexusFlow sigue una arquitectura **event-driven** de tres capas:
 Next.js 15 App Router · React 19 Server Components · Zustand · TanStack Query
 
 **Capa Plataforma (Core)**
-Supabase (PostgreSQL + RLS + Realtime) · Edge Functions · Event Bus · Agentes IA (Langchain.js + GPT-4o) · RAG con pgvector
+Supabase (PostgreSQL + RLS + Realtime) · Edge Functions · Event Bus · Agentes IA (AI SDK + Gemini 2.5 Flash) · RAG con pgvector
 
 **Capa Integraciones**
 Make · Slack · Stripe · OpenAI · Email · Webhooks externos
@@ -58,7 +58,7 @@ Make · Slack · Stripe · OpenAI · Email · Webhooks externos
 | Estilos | Tailwind CSS v4 | Utility-first con design tokens, máxima velocidad de UI |
 | Base de datos | Supabase (PostgreSQL) | RLS nativo, Realtime, Auth y Storage — reduce ops sin perder control |
 | Auth | Supabase Auth + RLS | Seguridad a nivel de fila en DB, no solo en middleware |
-| IA | Langchain.js + GPT-4o | Agentes con tool calling, RAG sobre documentos del usuario |
+| IA | AI SDK + Gemini 2.5 Flash | Agentes conversacionales con markdown rendering y streaming |
 | Vector DB | pgvector (Supabase) | Embeddings en la misma DB — evita latencia de servicio externo |
 | Estado | Zustand + TanStack Query | Estado global liviano + server state con cache automático |
 | Observabilidad | OpenTelemetry + Sentry | Trazas distribuidas y error tracking de producción |
@@ -71,11 +71,12 @@ Make · Slack · Stripe · OpenAI · Email · Webhooks externos
 
 - [x] Dashboard con métricas en tiempo real
 - [x] Sistema de workflow cards con estados (activo/pausado/error)
-- [x] Autenticación con email y Google OAuth
+- [x] Páginas de autenticación (login + registro) con Google OAuth UI
 - [x] Layout multitenant con sidebar navegable
+- [x] Agente de IA con Gemini 2.5 Flash — chat interface con markdown rendering
 - [ ] Builder drag-and-drop de workflows (en progreso)
 - [ ] Motor de ejecución event-driven
-- [ ] Agentes de IA con RAG pipeline
+- [ ] Auth real con Supabase + RLS
 - [ ] Webhooks bidireccionales con validación HMAC
 - [ ] Rate limiting con Upstash Redis
 - [ ] Observabilidad con OpenTelemetry
@@ -95,7 +96,7 @@ npm install
 
 # Configurar variables de entorno
 cp .env.example .env.local
-# Editar .env.local con tus credenciales de Supabase
+# Editar .env.local con tus credenciales
 
 # Arrancar en desarrollo
 npm run dev
@@ -108,6 +109,7 @@ Abre [http://localhost:3000](http://localhost:3000) en el navegador.
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key
 ```
 
 ---
@@ -125,10 +127,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 - Auth real con email y Google OAuth
 - CRUD de workflows persistido
 
-### Fase 3 — Motor de IA
-- Integración Langchain.js + GPT-4o
-- Pipeline RAG con pgvector
-- Streaming de respuestas via SSE
+### Fase 3 — Motor de IA ✅
+- Integración AI SDK + Gemini 2.5 Flash
+- Chat interface con respuestas en tiempo real
+- Markdown rendering de respuestas del agente
 
 ### Fase 4 — Robustez
 - Webhooks bidireccionales con HMAC
@@ -150,9 +152,17 @@ Supabase ofrece RLS nativo a nivel de DB, Realtime vía WebSockets y Auth integr
 **¿Por qué Next.js 15 App Router en lugar de Vite + Express?**
 El App Router permite colocar lógica de servidor (Server Components, API Routes) junto al cliente en el mismo proyecto, implementando el patrón BFF sin infraestructura adicional. El resultado es menos latencia y un bundle de cliente más pequeño.
 
+**¿Por qué AI SDK + Gemini en lugar de Langchain + OpenAI?**
+El AI SDK de Vercel ofrece integración nativa con Next.js, soporte de streaming out-of-the-box y una API más simple para proyectos en solitario. Gemini 2.5 Flash ofrece capacidades equivalentes a GPT-4o con un free tier generoso para desarrollo.
+
 **¿Por qué pgvector en lugar de Pinecone?**
 Al usar pgvector dentro de Supabase, los embeddings viven en la misma base de datos que los datos del usuario. Esto elimina una red de llamadas entre servicios y simplifica las queries con JOIN directo entre datos relacionales y vectoriales.
 
+---
+
+## Licencia
+
+MIT © [gerindiz](https://github.com/gerindiz)
 ---
 
 ## Licencia
