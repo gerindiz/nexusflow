@@ -1,9 +1,9 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-
 const navItems = [
   { href: '/workflows', label: 'Workflows', emoji: '⚡' },
+  { href: '/ai', label: 'Agente IA', emoji: '🤖' },
   { href: '/webhooks', label: 'Webhooks', emoji: '🔗' },
   { href: '/settings', label: 'Settings', emoji: '⚙️' },
 ]
@@ -61,4 +61,4 @@ export default function Sidebar() {
 
     </aside>
   )
-}
+  }
