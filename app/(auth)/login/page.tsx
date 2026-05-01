@@ -1,17 +1,42 @@
+'use client'
+import { useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
+
 export default function LoginPage() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const router = useRouter()
+  const supabase = createClient()
+
+  async function handleLogin() {
+    if (!email || !password) return
+    setLoading(true)
+    setError('')
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (error) {
+      setError('Email o contraseña incorrectos')
+      setLoading(false)
+      return
+    }
+
+    router.push('/workflows')
+    router.refresh()
+  }
+
   return (
     <div style={{minHeight:'100vh', background:'#f9fafb', display:'flex', alignItems:'center', justifyContent:'center'}}>
       <div style={{background:'white', border:'1px solid #f3f4f6', borderRadius:'16px', padding:'40px', width:'100%', maxWidth:'400px'}}>
 
-        {/* Logo */}
         <div style={{display:'flex', alignItems:'center', gap:'8px', marginBottom:'32px', justifyContent:'center'}}>
-          <div style={{width:'32px', height:'32px', background:'#2563eb', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'16px'}}>
-            ⚡
-          </div>
+          <div style={{width:'32px', height:'32px', background:'#2563eb', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'16px'}}>⚡</div>
           <span style={{fontWeight:600, fontSize:'18px', color:'#111827'}}>NexusFlow</span>
         </div>
 
-        {/* Título */}
         <h1 style={{margin:'0 0 4px', fontSize:'20px', fontWeight:500, color:'#111827', textAlign:'center'}}>
           Bienvenido de vuelta
         </h1>
@@ -19,48 +44,53 @@ export default function LoginPage() {
           Ingresa a tu cuenta para continuar
         </p>
 
-        {/* Form */}
+        {error && (
+          <div style={{background:'#fef2f2', border:'1px solid #fecaca', borderRadius:'8px', padding:'10px 12px', marginBottom:'16px', fontSize:'13px', color:'#dc2626'}}>
+            {error}
+          </div>
+        )}
+
         <div style={{display:'flex', flexDirection:'column', gap:'16px'}}>
           <div>
-            <label style={{display:'block', fontSize:'12px', fontWeight:500, color:'#374151', marginBottom:'6px'}}>
-              Email
-            </label>
+            <label style={{display:'block', fontSize:'12px', fontWeight:500, color:'#374151', marginBottom:'6px'}}>Email</label>
             <input
               type="email"
               placeholder="tu@email.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleLogin()}
               style={{width:'100%', padding:'10px 12px', border:'1px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', color:'#111827', outline:'none', boxSizing:'border-box'}}
             />
           </div>
 
           <div>
-            <label style={{display:'block', fontSize:'12px', fontWeight:500, color:'#374151', marginBottom:'6px'}}>
-              Contraseña
-            </label>
+            <label style={{display:'block', fontSize:'12px', fontWeight:500, color:'#374151', marginBottom:'6px'}}>Contraseña</label>
             <input
               type="password"
               placeholder="••••••••"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleLogin()}
               style={{width:'100%', padding:'10px 12px', border:'1px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', color:'#111827', outline:'none', boxSizing:'border-box'}}
             />
           </div>
 
           <button
-            style={{width:'100%', padding:'10px', background:'#2563eb', color:'white', border:'none', borderRadius:'8px', fontSize:'14px', fontWeight:500, cursor:'pointer', marginTop:'8px'}}
+            onClick={handleLogin}
+            disabled={loading}
+            style={{width:'100%', padding:'10px', background: loading ? '#93c5fd' : '#2563eb', color:'white', border:'none', borderRadius:'8px', fontSize:'14px', fontWeight:500, cursor: loading ? 'not-allowed' : 'pointer', marginTop:'8px'}}
           >
-            Iniciar sesión
+            {loading ? 'Ingresando...' : 'Iniciar sesión'}
           </button>
         </div>
 
-        {/* Divider */}
         <div style={{display:'flex', alignItems:'center', gap:'12px', margin:'24px 0'}}>
           <div style={{flex:1, height:'1px', background:'#f3f4f6'}} />
           <span style={{fontSize:'12px', color:'#9ca3af'}}>o continúa con</span>
           <div style={{flex:1, height:'1px', background:'#f3f4f6'}} />
         </div>
 
-        {/* Google */}
-        <button
-          style={{width:'100%', padding:'10px', background:'white', color:'#374151', border:'1px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px'}}
-        >
+        <button style={{width:'100%', padding:'10px', background:'white', color:'#374151', border:'1px solid #e5e7eb', borderRadius:'8px', fontSize:'14px', fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'8px'}}>
           <svg width="16" height="16" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -70,12 +100,9 @@ export default function LoginPage() {
           Continuar con Google
         </button>
 
-        {/* Register link */}
         <p style={{margin:'24px 0 0', fontSize:'13px', color:'#9ca3af', textAlign:'center'}}>
           ¿No tienes cuenta?{' '}
-          <a href="/register" style={{color:'#2563eb', textDecoration:'none', fontWeight:500}}>
-            Regístrate gratis
-          </a>
+          <a href="/register" style={{color:'#2563eb', textDecoration:'none', fontWeight:500}}>Regístrate gratis</a>
         </p>
 
       </div>
