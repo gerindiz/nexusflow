@@ -22,7 +22,6 @@ NexusFlow resuelve un problema real: los equipos pierden horas configurando auto
 
 ## Demo
 
-## Demo
 
 🚀 **[Ver demo en vivo](https://nexusflow-git-main-gerindizs-projects.vercel.app)**
 
