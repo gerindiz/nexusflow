@@ -22,7 +22,11 @@ NexusFlow resuelve un problema real: los equipos pierden horas configurando auto
 
 ## Demo
 
-> 🚧 Deploy en Vercel próximamente — [ver roadmap](#roadmap)
+## Demo
+
+🚀 **[Ver demo en vivo](https://nexusflow-git-main-gerindizs-projects.vercel.app)**
+
+> Usa cualquier email para registrarte y explorar el dashboard y el agente de IA.
 
 ---
 
